@@ -1,0 +1,11 @@
+<project name="ev3sync">
+    <target name="ev3sync">
+        <scp todir="robot:maker@ev3dev:/home/robot"
+                dirmode="755" filemode="755">
+            <fileset dir="." casesensitive="false">
+                <include name="**/*.py"/>
+                <exclude name="**/*Test*"/>
+            </fileset>
+        </scp>
+    </target>
+</project>
