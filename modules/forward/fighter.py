@@ -148,16 +148,17 @@ def Proportional_Reg(u,left_koeff=1,right_koeff=1):
 
 try:
     print ("Programm started")
-    while True:
-        Set_Mid_Motor(100)
-        if isFar() and not isCatch():
-            Proportional_Reg(NormSeeker())
-        else:
-            if isCatch():
-                while isCatch():
-                    Proportional_Reg(N()/180*100)
-                Proportional_Reg(NormSeeker()*0.5)
-            
+#     while True:
+#         Set_Mid_Motor(100)
+#         if isFar() and not isCatch():
+#             Proportional_Reg(NormSeeker())
+#         else:
+#             if isCatch():
+#                 while isCatch():
+#                     Proportional_Reg(N()/180*100)
+#                 Proportional_Reg(NormSeeker()*0.5)
+#         mid_mot.run_to_rel_pos(position = 30)
+#         mid_mot.run_to_rel_pos(position = -30)
     print('Programm ended')
 except :
     Reset_Motors()

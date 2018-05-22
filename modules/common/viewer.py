@@ -4,35 +4,44 @@ from ev3dev.core import LargeMotor, Sensor
 from time import sleep
 import sys, os
 
-North=0
+##########################################################################
+########################### MOTORS INITIALIZING ##########################
+##########################################################################
 
 left_mot    = LargeMotor('outB')
+assert      left_mot.connected, "B Motor not connected"
 left_mot.polarity = 'inversed'
 left_mot.stop_action = 'brake'
+
 right_mot   = LargeMotor('outC')
+assert      right_mot.connected, "C Motor not connected"
 right_mot.polarity = 'inversed'
 right_mot.stop_action= 'brake'
+
 mid_mot     = LargeMotor('outA')
+assert      mid_mot.connected, "D Motor not connected"
 mid_mot.polarity = 'inversed'
 mid_mot.stop_action = 'brake'
 
+##########################################################################
+########################### SENSORS INITIALIZING #########################
+##########################################################################
+
 seeker      = Sensor(address='in1:i2c8', driver_name = 'ht-nxt-ir-seek-v2')
+assert      seeker.connected, "Seeker not connected to IN1"
 seeker.mode = 'AC-ALL'
+
 compass     = Sensor(address='in2:i2c1', driver_name = 'ht-nxt-compass')
+assert      compass.connected, "Compass not connected to IN2"
 compass.mode= 'COMPASS'
+
 light       = Sensor(address='in3', driver_name = 'lego-nxt-light')
+assert      light.connected, "Light not connected to IN3"
 light.mode  = 'REFLECT'
-# touch       = TouchSensor('in4')
-# touch.mode  = 'TOUCH'
 
-assert left_mot.connected, "B Motor not connected"
-assert right_mot.connected, "C Motor not connected"
-assert mid_mot.connected, "D Motor not connected"
-
-assert seeker.connected, "Seeker not connected"
-assert compass.connected, "Compass not connected"
-assert light.connected, "Light not connected"
-# assert touch.connected, "Sonar net connected"
+##################################################################
+##################################################################
+##################################################################
 
 def Distance():
     seek_val=[]
