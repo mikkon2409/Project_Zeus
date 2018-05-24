@@ -57,7 +57,6 @@ while True:
     sys.stdout.write('Seeker :  '+str(seek)+'\n')
     sys.stdout.write('Compass : '+str(compass.value(0))+'\n')
     sys.stdout.write('Light :   '+str(light.value(0))+'\n')
-#     sys.stdout.write('Sonar :   '+str(touch.value(0))+'\n')
     sys.stdout.write('Motor :   '+str(mid_mot.position)+'\n')
     sys.stdout.write('===============================================\n')
     sys.stdout.flush()
