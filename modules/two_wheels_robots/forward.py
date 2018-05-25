@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import math
 import statistics as stat
 from time import sleep
 from ev3dev.ev3 import Button
@@ -11,12 +12,12 @@ from ev3dev.core import LargeMotor, Sensor
 
 left_mot    = LargeMotor('outB')
 assert      left_mot.connected, "B Motor not connected"
-left_mot.polarity = 'inversed'
+left_mot.polarity = 'normal'
 left_mot.stop_action = 'brake'
 
 right_mot   = LargeMotor('outC')
 assert      right_mot.connected, "C Motor not connected"
-right_mot.polarity = 'inversed'
+right_mot.polarity = 'normal'
 right_mot.stop_action= 'brake'
 
 mid_mot     = LargeMotor('outA')
@@ -129,12 +130,17 @@ def TurnSector():
     Set_Motors()
      
 def Bit():
-    mid_mot.run_to_rel_pos(70)
+    mid_mot.speed_sp=1050
+    mid_mot.run_to_rel_pos(position_sp = 50)
     sleep(0.7)
-    mid_mot.run_to_rel_pos(-70)
-sleep(0.7)
+    mid_mot.run_to_rel_pos(position_sp = -50)
+    sleep(0.7)
 
-            
+def SinCos(k, v, alpha):
+    left_val = v*(math.cos(alpha)+(k*math.sin(alpha)))
+    right_val = v*(math.cos(alpha)-(k*math.sin(alpha)))
+    Set_Motors(left_val, right_val)
+    
 def Find(u):
     u=u*35
     Set_Motors(u,-u)
@@ -144,6 +150,7 @@ def Proportional_Reg(u,left_koeff=1,right_koeff=1):
     left=(65+u)*left_koeff
     right=(65-u)*right_koeff
     Set_Motors(left,right)
+
     
 # def GoBack():
 #     TurnSector()
@@ -154,12 +161,24 @@ def Proportional_Reg(u,left_koeff=1,right_koeff=1):
 #     sleep(0.4)
 #     Set_Motors()
 
+#SinCos(0.57, 700, NormSeeker()*math.pi/6)
+
 try:
     print ("Programm started")
     while True:
-        mid_mot.speed_sp = mid_mot.max_speed
-        mid_mot.run_to_abs_pos(position_sp = 30)
-        mid_mot.run_to_abs_pos(position_sp = 0)
+#         Bit()
+        if isFar():
+            SinCos(0.57,700,NormSeeker()*math.pi/6)
+        elif isCatch():
+            TurnSector()
+            Set_Motors(100, 100)
+            Bit()
+            Set_Motors()
+        else:
+            SinCos(0.57,500,NormSeeker()*math.pi/6)
+#         mid_mot.speed_sp = mid_mot.max_speed
+#         mid_mot.run_to_abs_pos(position_sp = 30)
+#         mid_mot.run_to_abs_pos(position_sp = 0)
 #         Reset_Motors()
 #         Set_Mid_Motor(100)
 #         sleep(0.5)
