@@ -4,6 +4,7 @@ from ev3dev.core import LargeMotor, Sensor
 from time import sleep
 import sys, os
 
+
 ##########################################################################
 ########################### MOTORS INITIALIZING ##########################
 ##########################################################################
@@ -39,6 +40,11 @@ light       = Sensor(address='in3', driver_name = 'lego-nxt-light')
 assert      light.connected, "Light not connected to IN3"
 light.mode  = 'REFLECT'
 
+ballLight  = Sensor(address='in4', driver_name = 'lego-nxt-light')
+#assert      ballLight.connected, "Light not connected to IN4"
+if ballLight.connected:
+    ballLight.mode  = 'REFLECT'
+
 ##################################################################
 ##################################################################
 ##################################################################
@@ -57,6 +63,8 @@ while True:
     sys.stdout.write('Seeker :  '+str(seek)+'\n')
     sys.stdout.write('Compass : '+str(compass.value(0))+'\n')
     sys.stdout.write('Light :   '+str(light.value(0))+'\n')
+    if ballLight.connected:
+        sys.stdout.write('BallLight:'+str(ballLight.value(0))+'\n')
     sys.stdout.write('Motor :   '+str(mid_mot.position)+'\n')
     sys.stdout.write('===============================================\n')
     sys.stdout.flush()

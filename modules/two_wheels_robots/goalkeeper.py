@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+import math
 from time import sleep
 from ev3dev.ev3 import Button
 from ev3dev.core import LargeMotor, Sensor
@@ -87,6 +87,11 @@ def Set_Motors(left=0, right=0,stop_mode='brake'):
     else:
         right_mot.stop_action=stop_mode
         right_mot.stop()
+        
+def SinCos(k, v, alpha):
+    left_val = v*(math.cos(alpha)+(k*math.sin(alpha)))
+    right_val = v*(math.cos(alpha)-(k*math.sin(alpha)))
+    Set_Motors(left_val, right_val)
 
 def Set_Mid_Motor(mid = 0,stop_mode='brake'):
     mid=mid/100*1050
@@ -122,13 +127,13 @@ def TurnSector():
         q=-1
     else:
         q=1
-    Set_Motors(20*q, 20*(-q))
-    while abs(N())>7:
+    Set_Motors(15*q, 15*(-q))
+    while abs(N())>10:
         continue
     Set_Motors()
             
 def Find(u):
-    u=u*30
+    u=u*15
     Set_Motors(u,-u)
 
 def Proportional_Reg(u):
@@ -139,13 +144,14 @@ def Proportional_Reg(u):
     
 def GoBack():
     TurnSector()
-    dB=50
-    stepB=18
-    Set_Motors(-30, -30)
+    dB=200
+    stepB=0
+    Set_Motors(-10, -10)
     sleep(0.3)
     while abs(dB)>stepB:
+        print(dB)
         left_mot.position=0
-        sleep(0.05)
+        sleep(0.01)
         dB=left_mot.position
     Set_Motors(60, 60)
     sleep(0.4)
@@ -153,15 +159,24 @@ def GoBack():
 
 try:
     print ("Programm started")
+    
     while True:
         if isFar():
             Find(NormSeeker())
-        if not isFar():    
-            Set_Motors(60, 60)
-            sleep(3)
-            Set_Motors(-60, -60)
-            sleep(3)    
+        else:
+            bilo = Light()
+            Stalo = Light()
+            Set_Mid_Motor(100)
+            while abs(bilo-Stalo)<8.5:    
+                SinCos(0.5, 700, NormSeeker()*math.pi/6)
+                Stalo = Light()
+                sleep(0.1)
+                bilo = Light()
+            Set_Motors(-30, -30)
+            sleep(0.7)
             GoBack()
+            Set_Mid_Motor()               
+           
     print('Programm ended')
 except :
     Reset_Motors()

@@ -41,6 +41,10 @@ light       = Sensor(address='in3', driver_name = 'lego-nxt-light')
 assert      light.connected, "Light not connected to IN3"
 light.mode  = 'REFLECT'
 
+ballLight  = Sensor(address='in4', driver_name = 'lego-nxt-light')
+assert      ballLight.connected, "Light not connected to IN4"
+ballLight.mode  = 'REFLECT'
+
 button      = Button()
 ##################################################################
 ##################################################################
@@ -113,12 +117,15 @@ def Distance():
         seek_val.append(seeker.value(i))
     return -1 if seek_val[0]==0 else seek_val[1+seek_val[0]//2]
 
+def ballLightv():
+    return ballLight.value(0)
+
 def isFar():
     return Distance()<far
 
 def isCatch():
-    return Distance()>far and abs(NormSeeker())<2
-
+    #print(ballLight.value(0))
+    return abs(NormSeeker())<2 and ballLightv() > 350
 def TurnSector():
     if N()>0:
         q=-1
@@ -146,7 +153,8 @@ def Find(u):
     Set_Motors(u,-u)
 
 def Proportional_Reg(u,left_koeff=1,right_koeff=1):
-    u=u*50
+#    u=u*50
+
     left=(65+u)*left_koeff
     right=(65-u)*right_koeff
     Set_Motors(left,right)
@@ -166,29 +174,18 @@ def Proportional_Reg(u,left_koeff=1,right_koeff=1):
 try:
     print ("Programm started")
     while True:
-#         Bit()
-        if isFar():
-            SinCos(0.57,700,NormSeeker()*math.pi/6)
+        if isFar() and not isCatch():
+            SinCos(0.5,700,NormSeeker()*math.pi/6)
         elif isCatch():
-            TurnSector()
+            while abs(N())>7:
+                Proportional_Reg(N()/4.4)
+                if not isCatch():
+                    break
             Set_Motors(100, 100)
             Bit()
-            Set_Motors()
         else:
-            SinCos(0.57,500,NormSeeker()*math.pi/6)
-#         mid_mot.speed_sp = mid_mot.max_speed
-#         mid_mot.run_to_abs_pos(position_sp = 30)
-#         mid_mot.run_to_abs_pos(position_sp = 0)
-#         Reset_Motors()
-#         Set_Mid_Motor(100)
-#         sleep(0.5)
-#         Set_Mid_Motor(0, 'hold')
-#         sleep(0.5)
-#         Set_Mid_Motor(-100)
-#         sleep(0.5)
-#         Set_Mid_Motor(0, 'hold')
-#         sleep(0.5)
+            SinCos(0.5,500,NormSeeker()*math.pi/6)
     print('Programm ended')
-except :
+except:
     Reset_Motors()
     print(Exception.with_traceback())
