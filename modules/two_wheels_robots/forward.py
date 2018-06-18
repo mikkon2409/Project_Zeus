@@ -177,10 +177,8 @@ try:
         if isFar() and not isCatch():
             SinCos(0.5,700,NormSeeker()*math.pi/6)
         elif isCatch():
-            while abs(N())>7:
+            while abs(N())>7 and isCatch():
                 Proportional_Reg(N()/4.4)
-                if not isCatch():
-                    break
             Set_Motors(100, 100)
             Bit()
         else:
