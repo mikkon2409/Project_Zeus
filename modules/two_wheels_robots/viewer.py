@@ -4,7 +4,6 @@ from ev3dev.core import LargeMotor, Sensor
 from time import sleep
 import sys, os
 
-
 ##########################################################################
 ########################### MOTORS INITIALIZING ##########################
 ##########################################################################
@@ -49,6 +48,20 @@ if ballLight.connected:
 ##################################################################
 ##################################################################
 
+file=open('test.txt','r')
+calibration=file.readlines()
+file.close()
+North   =int(calibration[0])
+green   =int(calibration[1])
+black   =int(calibration[2])
+far     =float(calibration[3])
+near    =float(calibration[4])
+
+transition=(green+black)/2
+
+def N():
+    return (compass.value(0)-North+540)%360-180
+
 def Distance():
     seek_val=[]
     for i in range(seeker.num_values):
@@ -62,6 +75,7 @@ while True:
     sys.stdout.write('SeekerDIS:'+str(Distance())+'\n')
     sys.stdout.write('Seeker :  '+str(seek)+'\n')
     sys.stdout.write('Compass : '+str(compass.value(0))+'\n')
+    sys.stdout.write('NNNNNNN : '+str(N())+'\n')
     sys.stdout.write('Light :   '+str(light.value(0))+'\n')
     if ballLight.connected:
         sys.stdout.write('BallLight:'+str(ballLight.value(0))+'\n')
@@ -69,5 +83,12 @@ while True:
     sys.stdout.write('===============================================\n')
     sys.stdout.flush()
     seek.clear()
+    left_mot.run_forever(speed_sp = 1000)
+    right_mot.run_forever(speed_sp = 1000)
+    mid_mot.run_forever(speed_sp = 1000)
     sleep(0.3)
+    left_mot.reset()
+    right_mot.reset()
+    mid_mot.reset()
+    
     os.system(['clear', 'cls'][os.name == os.sys.platform])

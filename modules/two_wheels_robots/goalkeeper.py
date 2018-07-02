@@ -144,18 +144,21 @@ def Proportional_Reg(u):
     
 def GoBack():
     TurnSector()
-    dB=200
-    stepB=0
-    Set_Motors(-10, -10)
-    sleep(0.3)
-    while abs(dB)>stepB:
-        print(dB)
-        left_mot.position=0
-        sleep(0.01)
-        dB=left_mot.position
-    Set_Motors(60, 60)
-    sleep(0.4)
+    Set_Motors(-50, -50)
+    sleep(0.6)
     Set_Motors()
+    #dB=200
+    #stepB=0
+    #Set_Motors(-10, -10)
+    #sleep(0.3)
+    #while abs(dB)>stepB:
+    #    print(dB)
+    #    left_mot.position=0
+    #    sleep(0.01)
+    #    dB=left_mot.position
+    #Set_Motors(60, 60)
+    #sleep(0.4)
+    #Set_Motors()
 
 try:
     print ("Programm started")
@@ -167,8 +170,8 @@ try:
             bilo = Light()
             Stalo = Light()
             Set_Mid_Motor(100)
-            while abs(bilo-Stalo)<8.5:    
-                SinCos(0.5, 700, NormSeeker()*math.pi/6)
+            while abs(bilo-Stalo)<17.5:   
+                SinCos(0.2,100,NormSeeker()*math.radians(25))
                 Stalo = Light()
                 sleep(0.1)
                 bilo = Light()

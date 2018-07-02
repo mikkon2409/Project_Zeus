@@ -106,10 +106,7 @@ def N():
     return (compass.value(0)-North+540)%360-180
 
 def NormSeeker():
-    if seeker.value(0)==0:
-        return -1 
-    else:
-        return seeker.value(0)-5
+    return seeker.value(0)-5 
 
 def Distance():
     seek_val=[]
@@ -125,7 +122,7 @@ def isFar():
 
 def isCatch():
     #print(ballLight.value(0))
-    return abs(NormSeeker())<2 and ballLightv() > 350
+    return abs(NormSeeker())<2 and ballLightv() > 250
 def TurnSector():
     if N()>0:
         q=-1
@@ -143,6 +140,14 @@ def Bit():
     mid_mot.run_to_rel_pos(position_sp = -50)
     sleep(0.7)
 
+def Quad(u):
+    k = 4
+    u = k*u*abs(u)
+    a = 65
+    left_val = a + u
+    right_val = a - u
+    Set_Motors(left_val, right_val)
+
 def SinCos(k, v, alpha):
     left_val = v*(math.cos(alpha)+(k*math.sin(alpha)))
     right_val = v*(math.cos(alpha)-(k*math.sin(alpha)))
@@ -153,8 +158,6 @@ def Find(u):
     Set_Motors(u,-u)
 
 def Proportional_Reg(u,left_koeff=1,right_koeff=1):
-#    u=u*50
-
     left=(65+u)*left_koeff
     right=(65-u)*right_koeff
     Set_Motors(left,right)
@@ -175,14 +178,14 @@ try:
     print ("Programm started")
     while True:
         if isFar() and not isCatch():
-            SinCos(0.5,700,NormSeeker()*math.pi/6)
-        elif isCatch():
-            while abs(N())>7 and isCatch():
-                Proportional_Reg(N()/4.4)
+            SinCos(0.2,120,NormSeeker()*math.radians(25))
+        elif isCatch() and abs(N()>10):
+            Proportional_Reg(N()/4.4)
+        elif abs(N()<=10) and isCatch():
             Set_Motors(100, 100)
             Bit()
         else:
-            SinCos(0.5,500,NormSeeker()*math.pi/6)
+            SinCos(0.2,70,NormSeeker()*math.radians(25))
     print('Programm ended')
 except:
     Reset_Motors()
